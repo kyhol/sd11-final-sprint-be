@@ -1,4 +1,4 @@
 package com.keyin.server.service;
 
-public class deletethis {
+public class MovieService {
 }
