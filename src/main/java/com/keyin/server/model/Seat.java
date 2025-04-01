@@ -1,0 +1,93 @@
+package com.keyin.server.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "seats")
+public class Seat {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "screen_id", nullable = false)
+    private Screen screen;
+
+    @Column(name = "row_letter")
+    private String rowLetter;
+
+    @Column(name = "seat_number")
+    private Integer seatNumber;
+
+    @Column(name = "seat_type")
+    private String seatType;
+
+    private Boolean available = true;
+
+    public Seat() {
+    }
+
+    public Seat(Screen screen, String rowLetter, Integer seatNumber) {
+        this.screen = screen;
+        this.rowLetter = rowLetter;
+        this.seatNumber = seatNumber;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Screen getScreen() {
+        return screen;
+    }
+
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public String getRowLetter() {
+        return rowLetter;
+    }
+
+    public void setRowLetter(String rowLetter) {
+        this.rowLetter = rowLetter;
+    }
+
+    public Integer getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public String getSeatType() {
+        return seatType;
+    }
+
+    public void setSeatType(String seatType) {
+        this.seatType = seatType;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "id=" + id +
+                ", row='" + rowLetter + '\'' +
+                ", number=" + seatNumber +
+                ", screenId=" + (screen != null ? screen.getId() : null) +
+                '}';
+    }
+}
