@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     container_name: cineflex-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password123
       MYSQL_DATABASE: cineflex
     ports:
       - "3306:3306"
@@ -14,21 +14,24 @@ services:
     networks:
       - cineflex-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ppassword123"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   backend:
+    build: .
     image: cineflex/sd11-final-sprint-be:1.0-SNAPSHOT
     container_name: cineflex-backend
     depends_on:
       mysql:
         condition: service_healthy
     environment:
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cineflex?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_PASSWORD: password123
     ports:
       - "8080:8080"
     networks:

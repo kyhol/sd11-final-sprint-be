@@ -1,5 +1,12 @@
-FROM openjdk:17-jdk-slim
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY target/*.jar app.jar
+COPY . /app
+RUN mvn clean package -DskipTests
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+RUN apt-get update && apt-get install -y wget
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["/bin/bash", "-c", "/wait-for-it.sh ${DATABASE_HOST:-localhost}:${DATABASE_PORT:-3306} -t 60 && java -jar app.jar"]
