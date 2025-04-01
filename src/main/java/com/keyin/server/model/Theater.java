@@ -1,4 +1,4 @@
 package com.keyin.server.model;
 
-public class deletethis {
+public class Theater {
 }
