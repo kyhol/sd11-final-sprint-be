@@ -1,8 +1,20 @@
 package com.keyin.server.model;
 
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "screens")
@@ -24,9 +36,11 @@ public class Screen {
     private String screenType;
 
     @OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("screen") // Prevent recursion when serializing each Seat
     private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("screen") // Prevent recursion when serializing each ShowTime
     private List<ShowTime> showtimes = new ArrayList<>();
 
     // Default constructor

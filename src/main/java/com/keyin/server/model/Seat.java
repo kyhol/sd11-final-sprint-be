@@ -1,6 +1,15 @@
 package com.keyin.server.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "seats")
@@ -11,6 +20,7 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name = "screen_id", nullable = false)
+    @JsonIgnoreProperties({"seats", "showtimes", "theater"}) // Prevent infinite recursion from Screen
     private Screen screen;
 
     @Column(name = "row_letter")
@@ -22,6 +32,8 @@ public class Seat {
     @Column(name = "seat_type")
     private String seatType;
 
+    // Map "available" as a boolean with a TINYINT(1) column definition
+    @Column(name = "available", nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean available = true;
 
     public Seat() {
