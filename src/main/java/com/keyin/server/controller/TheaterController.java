@@ -23,9 +23,6 @@ public class TheaterController {
         this.theaterService = theaterService;
     }
 
-    // --------------------------------------
-    // GET All Theaters
-    // --------------------------------------
     @GetMapping
     public ResponseEntity<List<TheaterDTO>> getAllTheaters() {
         List<Theater> theaters = theaterService.getAllTheaters();
@@ -35,9 +32,6 @@ public class TheaterController {
         return ResponseEntity.ok(dtos);
     }
 
-    // --------------------------------------
-    // GET Theater by ID
-    // --------------------------------------
     @GetMapping("/{id}")
     public ResponseEntity<TheaterDTO> getTheaterById(@PathVariable Long id) {
         return theaterService.getTheaterById(id)
@@ -45,9 +39,6 @@ public class TheaterController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // --------------------------------------
-    // GET Theaters by City
-    // --------------------------------------
     @GetMapping("/city/{city}")
     public ResponseEntity<List<TheaterDTO>> getTheatersByCity(@PathVariable String city) {
         List<Theater> theaters = theaterService.getTheatersByCity(city);
@@ -57,9 +48,6 @@ public class TheaterController {
         return ResponseEntity.ok(dtos);
     }
 
-    // --------------------------------------
-    // Search Theaters by Name
-    // --------------------------------------
     @GetMapping("/search")
     public ResponseEntity<List<TheaterDTO>> searchTheaters(@RequestParam String name) {
         List<Theater> theaters = theaterService.searchTheaters(name);
@@ -69,9 +57,6 @@ public class TheaterController {
         return ResponseEntity.ok(dtos);
     }
 
-    // --------------------------------------
-    // CREATE Theater
-    // --------------------------------------
     @PostMapping
     public ResponseEntity<TheaterDTO> createTheater(@RequestBody TheaterDTO dto) {
         Theater entity = toEntity(dto);
@@ -79,9 +64,6 @@ public class TheaterController {
         return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
     }
 
-    // --------------------------------------
-    // UPDATE Theater
-    // --------------------------------------
     @PutMapping("/{id}")
     public ResponseEntity<TheaterDTO> updateTheater(@PathVariable Long id, @RequestBody TheaterDTO dto) {
         return theaterService.getTheaterById(id)
@@ -98,9 +80,6 @@ public class TheaterController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // --------------------------------------
-    // DELETE Theater
-    // --------------------------------------
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTheater(@PathVariable Long id) {
         return theaterService.getTheaterById(id)
@@ -111,9 +90,6 @@ public class TheaterController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ========================================================================
-    // HELPER METHODS
-    // ========================================================================
     private TheaterDTO toDTO(Theater entity) {
         TheaterDTO dto = new TheaterDTO();
         dto.setId(entity.getId());
