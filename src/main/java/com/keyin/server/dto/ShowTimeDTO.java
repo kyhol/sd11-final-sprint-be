@@ -1,49 +1,87 @@
 package com.keyin.server.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class ShowTimeDTO {
-    private Long id;
-    private LocalDate showDate;
-    private LocalTime showTime;
-    private Long movieId;   // Link to the Movie
-    private Long screenId;  // Link to the Screen
 
-    // Constructors
+    private Long id;
+    private Long movieId;
+    private Long screenId;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private LocalDate date;
+    private BigDecimal price;
+
     public ShowTimeDTO() {
     }
 
-    // Getters & Setters
+    public ShowTimeDTO(Long id, Long movieId, Long screenId, LocalDateTime startTime,
+                       LocalDateTime endTime, LocalDate date, BigDecimal price) {
+        this.id = id;
+        this.movieId = movieId;
+        this.screenId = screenId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.date = date;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
-    public LocalDate getShowDate() {
-        return showDate;
-    }
-    public void setShowDate(LocalDate showDate) {
-        this.showDate = showDate;
-    }
-    public LocalTime getShowTime() {
-        return showTime;
-    }
-    public void setShowTime(LocalTime showTime) {
-        this.showTime = showTime;
-    }
+
     public Long getMovieId() {
         return movieId;
     }
+
     public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
+
     public Long getScreenId() {
         return screenId;
     }
+
     public void setScreenId(Long screenId) {
         this.screenId = screenId;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }
 
