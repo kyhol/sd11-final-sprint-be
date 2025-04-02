@@ -1,5 +1,6 @@
 package com.keyin.server.controller;
 
+import com.keyin.server.dto.SeatDTO;
 import com.keyin.server.model.Seat;
 import com.keyin.server.service.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/seats")
@@ -23,61 +24,81 @@ public class SeatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Seat>> getAllSeats() {
-        return ResponseEntity.ok(seatService.getAllSeats());
+    public ResponseEntity<List<SeatDTO>> getAllSeats() {
+        List<Seat> seats = seatService.getAllSeats();
+        List<SeatDTO> dtos = seats.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seat> getSeatById(@PathVariable Long id) {
+    public ResponseEntity<SeatDTO> getSeatById(@PathVariable Long id) {
         return seatService.getSeatById(id)
-                .map(ResponseEntity::ok)
+                .map(seat -> ResponseEntity.ok(toDTO(seat)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/screen/{screenId}")
-    public ResponseEntity<List<Seat>> getSeatsByScreen(@PathVariable Long screenId) {
-        return ResponseEntity.ok(seatService.getSeatsByScreen(screenId));
+    public ResponseEntity<List<SeatDTO>> getSeatsByScreen(@PathVariable Long screenId) {
+        List<Seat> seats = seatService.getSeatsByScreen(screenId);
+        List<SeatDTO> dtos = seats.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/screen/{screenId}/available")
-    public ResponseEntity<List<Seat>> getAvailableSeatsByScreen(@PathVariable Long screenId) {
-        return ResponseEntity.ok(seatService.getAvailableSeatsByScreen(screenId));
+    public ResponseEntity<List<SeatDTO>> getAvailableSeatsByScreen(@PathVariable Long screenId) {
+        List<Seat> seats = seatService.getAvailableSeatsByScreen(screenId);
+        List<SeatDTO> dtos = seats.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping
-    public ResponseEntity<Seat> createSeat(@RequestBody Seat seat) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(seatService.saveSeat(seat));
+    public ResponseEntity<SeatDTO> createSeat(@RequestBody SeatDTO dto) {
+        Seat seatEntity = toEntity(dto);
+        Seat saved = seatService.saveSeat(seatEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
     }
 
     @PostMapping("/screen/{screenId}/bulk")
-    public ResponseEntity<List<Seat>> createSeatsForScreen(
+    public ResponseEntity<List<SeatDTO>> createSeatsForScreen(
             @PathVariable Long screenId,
-            @RequestBody List<Seat> seats) {
-        List<Seat> createdSeats = seatService.createSeatsForScreen(screenId, seats);
+            @RequestBody List<SeatDTO> seatDTOs) {
+        List<Seat> seatsToCreate = seatDTOs.stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
+
+        List<Seat> createdSeats = seatService.createSeatsForScreen(screenId, seatsToCreate);
+
         if (createdSeats.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdSeats);
+
+        List<SeatDTO> createdDTOs = createdSeats.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDTOs);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Seat> updateSeat(@PathVariable Long id, @RequestBody Seat seat) {
-        return seatService.updateSeat(id, seat)
-                .map(ResponseEntity::ok)
+    public ResponseEntity<SeatDTO> updateSeat(@PathVariable Long id, @RequestBody SeatDTO dto) {
+        // convert the incoming DTO to an entity, but typically you'd fetch
+        // the existing seat from DB and update fields. For brevity:
+        return seatService.updateSeat(id, toEntity(dto))
+                .map(updated -> ResponseEntity.ok(toDTO(updated)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}/availability")
-    public ResponseEntity<Seat> updateSeatAvailability(
+    public ResponseEntity<SeatDTO> updateSeatAvailability(
             @PathVariable Long id,
-            @RequestBody Map<String, Boolean> availability) {
-        Boolean available = availability.get("available");
-        if (available == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
+            @RequestBody Boolean available) {
         return seatService.updateSeatAvailability(id, available)
-                .map(ResponseEntity::ok)
+                .map(updated -> ResponseEntity.ok(toDTO(updated)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -89,5 +110,27 @@ public class SeatController {
                     return ResponseEntity.noContent().<Void>build();
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    private SeatDTO toDTO(Seat seat) {
+        SeatDTO dto = new SeatDTO();
+        dto.setId(seat.getId());
+        if (seat.getScreen() != null) {
+            dto.setScreenId(seat.getScreen().getId());
+        }
+        dto.setRowLetter(seat.getRowLetter());
+        dto.setSeatNumber(seat.getSeatNumber());
+        dto.setSeatType(seat.getSeatType());
+        dto.setAvailable(seat.getAvailable());
+        return dto;
+    }
+
+    private Seat toEntity(SeatDTO dto) {
+        Seat seat = new Seat();
+        seat.setRowLetter(dto.getRowLetter());
+        seat.setSeatNumber(dto.getSeatNumber());
+        seat.setSeatType(dto.getSeatType());
+        seat.setAvailable(dto.getAvailable());
+        return seat;
     }
 }

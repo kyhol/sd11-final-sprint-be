@@ -1,5 +1,8 @@
 package com.keyin.server.controller;
 
+import com.keyin.server.dto.ShowTimeDTO;
+import com.keyin.server.model.Movie;
+import com.keyin.server.model.Screen;
 import com.keyin.server.model.ShowTime;
 import com.keyin.server.service.ShowTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/showtimes")
@@ -23,63 +29,125 @@ public class ShowTimeController {
         this.showTimeService = showTimeService;
     }
 
+    // --------------------------------------
+    // GET All ShowTimes
+    // --------------------------------------
     @GetMapping
-    public ResponseEntity<List<ShowTime>> getAllShowTimes() {
-        return ResponseEntity.ok(showTimeService.getAllShowTimes());
+    public ResponseEntity<List<ShowTimeDTO>> getAllShowTimes() {
+        List<ShowTime> showTimes = showTimeService.getAllShowTimes();
+        List<ShowTimeDTO> dtos = showTimes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
+    // --------------------------------------
+    // GET ShowTime by ID
+    // --------------------------------------
     @GetMapping("/{id}")
-    public ResponseEntity<ShowTime> getShowTimeById(@PathVariable Long id) {
+    public ResponseEntity<ShowTimeDTO> getShowTimeById(@PathVariable Long id) {
         return showTimeService.getShowTimeById(id)
-                .map(ResponseEntity::ok)
+                .map(showTime -> ResponseEntity.ok(toDTO(showTime)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/movie/{movieId}")
-    public ResponseEntity<List<ShowTime>> getShowTimesByMovie(@PathVariable Long movieId) {
-        return ResponseEntity.ok(showTimeService.getShowTimesByMovie(movieId));
-    }
-
-    @GetMapping("/screen/{screenId}")
-    public ResponseEntity<List<ShowTime>> getShowTimesByScreen(@PathVariable Long screenId) {
-        return ResponseEntity.ok(showTimeService.getShowTimesByScreen(screenId));
-    }
-
-    @GetMapping("/date/{date}")
-    public ResponseEntity<List<ShowTime>> getShowTimesByDate(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(showTimeService.getShowTimesByDate(date));
-    }
-
-    @GetMapping("/movie/{movieId}/date/{date}")
-    public ResponseEntity<List<ShowTime>> getShowTimesByMovieAndDate(
-            @PathVariable Long movieId,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(showTimeService.getShowTimesByMovieAndDate(movieId, date));
-    }
-
+    // --------------------------------------
+    // CREATE ShowTime
+    // --------------------------------------
     @PostMapping
-    public ResponseEntity<ShowTime> createShowTime(@RequestBody ShowTime showTime) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(showTimeService.saveShowTime(showTime));
+    public ResponseEntity<ShowTimeDTO> createShowTime(@RequestBody ShowTimeDTO dto) {
+        // Convert DTO -> Entity
+        ShowTime entity = toEntity(dto);
+
+        // The service or a dedicated layer typically sets the 'movie' and 'screen'
+        // by looking up the Movie/Screen from their IDs. For example:
+        //   Movie movie = movieRepository.findById(dto.getMovieId()).orElseThrow(...);
+        //   entity.setMovie(movie);
+        //   Screen screen = screenRepository.findById(dto.getScreenId()).orElseThrow(...);
+        //   entity.setScreen(screen);
+
+        ShowTime saved = showTimeService.saveShowTime(entity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
     }
 
+    // --------------------------------------
+    // UPDATE ShowTime
+    // --------------------------------------
     @PutMapping("/{id}")
-    public ResponseEntity<ShowTime> updateShowTime(@PathVariable Long id, @RequestBody ShowTime showTime) {
+    public ResponseEntity<ShowTimeDTO> updateShowTime(@PathVariable Long id, @RequestBody ShowTimeDTO dto) {
         return showTimeService.getShowTimeById(id)
-                .map(existingShowTime -> {
-                    showTime.setId(id);
-                    return ResponseEntity.ok(showTimeService.saveShowTime(showTime));
+                .map(existing -> {
+                    // Update fields from DTO
+                    existing.setStartTime(dto.getStartTime());
+                    existing.setEndTime(dto.getEndTime());
+                    existing.setDate(dto.getDate());
+                    existing.setPrice(dto.getPrice());
+                    // If you need to update the Movie/Screen, you'd fetch them from the DB, too
+
+                    ShowTime updated = showTimeService.saveShowTime(existing);
+                    return ResponseEntity.ok(toDTO(updated));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // --------------------------------------
+    // DELETE ShowTime
+    // --------------------------------------
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteShowTime(@PathVariable Long id) {
         return showTimeService.getShowTimeById(id)
-                .map(showTime -> {
+                .map(st -> {
                     showTimeService.deleteShowTime(id);
                     return ResponseEntity.noContent().<Void>build();
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    // --------------------------------------
+    // EXAMPLE: GET ShowTimes by Date
+    // --------------------------------------
+    @GetMapping("/date/{date}")
+    public ResponseEntity<List<ShowTimeDTO>> getShowTimesByDate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<ShowTime> showTimes = showTimeService.getShowTimesByDate(date);
+        List<ShowTimeDTO> dtos = showTimes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    // (You can add more endpoints for movie/screen lookups, etc.)
+
+    // ========================================================================
+    // HELPER METHODS: toDTO / toEntity
+    // ========================================================================
+    private ShowTimeDTO toDTO(ShowTime entity) {
+        ShowTimeDTO dto = new ShowTimeDTO();
+        dto.setId(entity.getId());
+        dto.setStartTime(entity.getStartTime());
+        dto.setEndTime(entity.getEndTime());
+        dto.setDate(entity.getDate());
+        dto.setPrice(entity.getPrice());
+
+        if (entity.getMovie() != null) {
+            dto.setMovieId(entity.getMovie().getId());
+        }
+        if (entity.getScreen() != null) {
+            dto.setScreenId(entity.getScreen().getId());
+        }
+        return dto;
+    }
+
+    private ShowTime toEntity(ShowTimeDTO dto) {
+        ShowTime entity = new ShowTime();
+        entity.setStartTime(dto.getStartTime());
+        entity.setEndTime(dto.getEndTime());
+        entity.setDate(dto.getDate());
+        entity.setPrice(dto.getPrice());
+
+        // Typically the association with Movie or Screen is resolved in the service:
+        // e.g. fetch the actual Movie/Screen from DB and set them on the entity.
+        return entity;
+    }
 }
+
