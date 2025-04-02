@@ -52,7 +52,7 @@ public class ShowTimeController {
         ShowTime saved = showTimeService.saveShowTime(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(saved));
     }
---------------------------------------
+
     @PutMapping("/{id}")
     public ResponseEntity<ShowTimeDTO> updateShowTime(@PathVariable Long id, @RequestBody ShowTimeDTO dto) {
         return showTimeService.getShowTimeById(id)
