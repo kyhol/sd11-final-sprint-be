@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType; // <-- For EAGER
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,17 +19,21 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "showtimes")
 public class ShowTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    // Link to Movie
+    @ManyToOne(fetch = FetchType.EAGER) // or LAZY if you prefer, but usually EAGER is easier for direct JSON
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    @ManyToOne
+    // Link to Screen (which then links to Theater)
+    // EAGER so 'screen' is always loaded with this ShowTime
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "screen_id", nullable = false)
-    @JsonIgnoreProperties({"showtimes", "seats", "theater"}) // Prevent recursion when serializing ShowTime -> Screen
+    @JsonIgnoreProperties({"showtimes", "seats"}) // helps avoid infinite loops if needed
     private Screen screen;
 
     @Column(name = "start_time")
@@ -49,7 +54,7 @@ public class ShowTime {
         this.movie = movie;
         this.screen = screen;
         this.startTime = startTime;
-        this.date = startTime.toLocalDate();
+        this.date = startTime != null ? startTime.toLocalDate() : null;
     }
 
     public ShowTime(Movie movie, Screen screen, LocalDateTime startTime,
@@ -58,9 +63,11 @@ public class ShowTime {
         this.screen = screen;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.date = startTime.toLocalDate();
+        this.date = startTime != null ? startTime.toLocalDate() : null;
         this.price = price;
     }
+
+    // GETTERS / SETTERS
 
     public Long getId() {
         return id;
@@ -92,7 +99,9 @@ public class ShowTime {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
-        this.date = startTime.toLocalDate();
+        if (this.startTime != null) {
+            this.date = this.startTime.toLocalDate();
+        }
     }
 
     public LocalDateTime getEndTime() {

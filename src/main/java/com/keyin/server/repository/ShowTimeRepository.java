@@ -1,14 +1,15 @@
 package com.keyin.server.repository;
 
-import com.keyin.server.model.Movie;
-import com.keyin.server.model.Screen;
-import com.keyin.server.model.ShowTime;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.keyin.server.model.Movie;
+import com.keyin.server.model.Screen;
+import com.keyin.server.model.ShowTime;
 
 @Repository
 public interface ShowTimeRepository extends JpaRepository<ShowTime, Long> {

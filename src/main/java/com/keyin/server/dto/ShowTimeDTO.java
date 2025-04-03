@@ -14,24 +14,16 @@ public class ShowTimeDTO {
     private LocalDate date;
     private BigDecimal price;
 
-    public ShowTimeDTO() {
-    }
+    // Fields to return real movie/theater names
+    private String movieTitle;
+    private String theaterName;
 
-    public ShowTimeDTO(Long id, Long movieId, Long screenId, LocalDateTime startTime,
-                       LocalDateTime endTime, LocalDate date, BigDecimal price) {
-        this.id = id;
-        this.movieId = movieId;
-        this.screenId = screenId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.date = date;
-        this.price = price;
+    public ShowTimeDTO() {
     }
 
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -39,7 +31,6 @@ public class ShowTimeDTO {
     public Long getMovieId() {
         return movieId;
     }
-
     public void setMovieId(Long movieId) {
         this.movieId = movieId;
     }
@@ -47,7 +38,6 @@ public class ShowTimeDTO {
     public Long getScreenId() {
         return screenId;
     }
-
     public void setScreenId(Long screenId) {
         this.screenId = screenId;
     }
@@ -55,7 +45,6 @@ public class ShowTimeDTO {
     public LocalDateTime getStartTime() {
         return startTime;
     }
-
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
@@ -63,7 +52,6 @@ public class ShowTimeDTO {
     public LocalDateTime getEndTime() {
         return endTime;
     }
-
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
@@ -71,7 +59,6 @@ public class ShowTimeDTO {
     public LocalDate getDate() {
         return date;
     }
-
     public void setDate(LocalDate date) {
         this.date = date;
     }
@@ -79,9 +66,21 @@ public class ShowTimeDTO {
     public BigDecimal getPrice() {
         return price;
     }
-
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-}
 
+    public String getMovieTitle() {
+        return movieTitle;
+    }
+    public void setMovieTitle(String movieTitle) {
+        this.movieTitle = movieTitle;
+    }
+
+    public String getTheaterName() {
+        return theaterName;
+    }
+    public void setTheaterName(String theaterName) {
+        this.theaterName = theaterName;
+    }
+}

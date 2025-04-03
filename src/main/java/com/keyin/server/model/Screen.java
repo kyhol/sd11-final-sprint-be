@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType; // <-- For EAGER
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,11 +20,14 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "screens")
 public class Screen {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    // Link to Theater
+    // EAGER load so 'theater' is always present
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "theater_id", nullable = false)
     private Theater theater;
 
@@ -36,24 +40,21 @@ public class Screen {
     private String screenType;
 
     @OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("screen") // Prevent recursion when serializing each Seat
+    @JsonIgnoreProperties("screen") // to avoid infinite recursion in JSON
     private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("screen") // Prevent recursion when serializing each ShowTime
+    @JsonIgnoreProperties("screen") // to avoid infinite recursion
     private List<ShowTime> showtimes = new ArrayList<>();
 
-    // Default constructor
     public Screen() {
     }
 
-    // Constructor with required fields
     public Screen(Theater theater, Integer screenNumber) {
         this.theater = theater;
         this.screenNumber = screenNumber;
     }
 
-    // Constructor with common fields
     public Screen(Theater theater, Integer screenNumber, Integer capacity, String screenType) {
         this.theater = theater;
         this.screenNumber = screenNumber;
@@ -61,7 +62,8 @@ public class Screen {
         this.screenType = screenType;
     }
 
-    // Getters and Setters
+    // GETTERS / SETTERS
+
     public Long getId() {
         return id;
     }

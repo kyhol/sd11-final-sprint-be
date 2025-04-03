@@ -1,17 +1,18 @@
 package com.keyin.server.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.keyin.server.model.Movie;
 import com.keyin.server.model.Screen;
 import com.keyin.server.model.ShowTime;
 import com.keyin.server.repository.MovieRepository;
 import com.keyin.server.repository.ScreenRepository;
 import com.keyin.server.repository.ShowTimeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ShowTimeService {
