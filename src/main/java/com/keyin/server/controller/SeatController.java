@@ -86,11 +86,13 @@ public class SeatController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SeatDTO> updateSeat(@PathVariable Long id, @RequestBody SeatDTO dto) {
-        // convert the incoming DTO to an entity, but typically you'd fetch
-        // the existing seat from DB and update fields. For brevity:
         return seatService.updateSeat(id, toEntity(dto))
                 .map(updated -> ResponseEntity.ok(toDTO(updated)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+    @GetMapping("/showtime/{showtimeId}/available")
+    public ResponseEntity<List<Seat>> getSeatsByShowtime(@PathVariable Long showtimeId) {
+        return ResponseEntity.ok(seatService.getSeatsByShowtime(showtimeId));
     }
 
     @PatchMapping("/{id}/availability")
