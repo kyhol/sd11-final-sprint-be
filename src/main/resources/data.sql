@@ -33,7 +33,7 @@ VALUES
  166, 
  'Sci-Fi, Adventure', 
  'PG-13', 
- 'https://via.placeholder.com/1200x600', 
+ 'https://dunenewsnet.com/wp-content/uploads/2023/05/Dune-Part-Two-Movie-Poster-791x989.jpg',
  '2025-01-10', 
  'https://youtu.be/exampleDune2'),
 
@@ -44,7 +44,7 @@ VALUES
  135, 
  'Action, Sci-Fi', 
  'PG-13', 
- 'https://via.placeholder.com/1200x600', 
+ 'https://m.media-amazon.com/images/I/61dZ9mCP6lL._AC_SX679_.jpg',
  '2025-01-15', 
  'https://youtu.be/exampleGodzilla'),
 
@@ -55,7 +55,7 @@ VALUES
  126, 
  'Action, Comedy', 
  'PG-13', 
- 'https://via.placeholder.com/1200x600', 
+ 'https://i.ebayimg.com/00/s/MTYwMFgxMDEw/z/5g8AAOSw7dJl8NfO/$_57.JPG?set_id=880000500F',
  '2025-01-20', 
  'https://youtu.be/exampleFallGuy'),
 
@@ -66,7 +66,7 @@ VALUES
  150,
  'Action, Adventure',
  'R',
- 'https://via.placeholder.com/1200x600',
+ 'https://www.movieposters.com/cdn/shop/files/scan_125c3acc-726c-425f-9512-9f13289d81a6_grande.jpg?v=1719593307',
  '2025-05-24',
  'https://youtu.be/exampleFuriosa'),
 
@@ -77,7 +77,7 @@ VALUES
  105,
  'Animation, Family',
  'PG',
- 'https://via.placeholder.com/1200x600',
+ 'https://lumiere-a.akamaihd.net/v1/images/p_insideout2_now_available_disneyplus_d24c051c.jpeg',
  '2025-06-14',
  'https://youtu.be/exampleInsideOut2');
 
