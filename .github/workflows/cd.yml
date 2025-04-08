@@ -1,0 +1,28 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ec2-user/sd11-final-sprint-be
+          git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git main
+          git reset --hard FETCH_HEAD
+          
+          mvn clean package -DskipTests
+          
+          docker build -t cineflex:latest .
+          docker stop cineflex-container || true
+          docker rm cineflex-container || true
+          docker run -d --name cineflex-container -p 8080:8080 cineflex:latest
