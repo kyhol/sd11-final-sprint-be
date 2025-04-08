@@ -29,7 +29,7 @@ services:
     environment:
       DATABASE_HOST: mysql
       DATABASE_PORT: 3306
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cineflex?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cineflex?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: password123
     ports:
