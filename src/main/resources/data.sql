@@ -35,7 +35,7 @@ VALUES
  'PG-13', 
  'https://dunenewsnet.com/wp-content/uploads/2023/05/Dune-Part-Two-Movie-Poster-791x989.jpg',
  '2025-01-10', 
- 'https://youtu.be/exampleDune2'),
+ 'https://www.youtube.com/embed/Way9Dexny3w?si=kXU94VvztFNk7MXD'),
 
 -- 2) Godzilla x Kong: The New Empire
 (2, 
@@ -46,7 +46,7 @@ VALUES
  'PG-13', 
  'https://m.media-amazon.com/images/I/61dZ9mCP6lL._AC_SX679_.jpg',
  '2025-01-15', 
- 'https://youtu.be/exampleGodzilla'),
+ 'https://www.youtube.com/embed/lV1OOlGwExM?si=E7gPyDMEZmhO2zcC'),
 
 -- 3) The Fall Guy
 (3, 
@@ -57,7 +57,7 @@ VALUES
  'PG-13', 
  'https://i.ebayimg.com/00/s/MTYwMFgxMDEw/z/5g8AAOSw7dJl8NfO/$_57.JPG?set_id=880000500F',
  '2025-01-20', 
- 'https://youtu.be/exampleFallGuy'),
+ 'https://www.youtube.com/embed/j7jPnwVGdZ8?si=mlVhBKnN1RABH48T'),
 
 -- 4) Furiosa: A Mad Max Saga (Coming Soon)
 (4,
@@ -68,7 +68,7 @@ VALUES
  'R',
  'https://www.movieposters.com/cdn/shop/files/scan_125c3acc-726c-425f-9512-9f13289d81a6_grande.jpg?v=1719593307',
  '2025-05-24',
- 'https://youtu.be/exampleFuriosa'),
+ 'https://www.youtube.com/embed/XJMuhwVlca4?si=fcKgqv0UPbVUFtXU'),
 
 -- 5) Inside Out 2 (Coming Soon)
 (5,
@@ -79,7 +79,7 @@ VALUES
  'PG',
  'https://lumiere-a.akamaihd.net/v1/images/p_insideout2_now_available_disneyplus_d24c051c.jpeg',
  '2025-06-14',
- 'https://youtu.be/exampleInsideOut2');
+ 'https://www.youtube.com/embed/LEjhY15eCx0?si=wt8_-JyQH9DzJSDj');
 
 -- =========================================
 -- Insert THEATERS
