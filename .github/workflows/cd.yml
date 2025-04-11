@@ -17,7 +17,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           cd /home/ec2-user/sd11-final-sprint-be
-          git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git main
+          git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git master
           git reset --hard FETCH_HEAD
           
           mvn clean package -DskipTests
