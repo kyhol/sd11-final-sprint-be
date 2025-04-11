@@ -28,7 +28,4 @@ jobs:
           git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git master
           git reset --hard FETCH_HEAD
           
-          sudo docker build -t cineflex:latest .
-          sudo docker stop cineflex-container || true
-          sudo docker rm cineflex-container || true
-          sudo docker run -d --name cineflex-container -p 8080:8080 cineflex:latest
+          sudo docker-compose up --build
