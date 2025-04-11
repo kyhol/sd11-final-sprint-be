@@ -21,7 +21,7 @@ jobs:
 
           APP_DIR="/home/ec2-user/sd11-final-sprint-be"
           REPO_URL="https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git"
-          BRANCH="master" # Or main, depending on your default branch
+          BRANCH="master"
 
           echo "Starting clean deployment process at $(date)"
 
