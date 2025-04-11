@@ -7,9 +7,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Test EC2 SSH
+    - name: Test EC2 SSH Connection
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -17,27 +17,40 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: uptime
 
-    - name: Deploy to EC2
+    - name: Deploy Clean to EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd /home/ec2-user/sd11-final-sprint-be
-          git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git master
-          git reset --hard FETCH_HEAD
-          
-          echo "Starting application deployment at $(date)"
-          sudo docker-compose down || true
+          set -e
+          set -x
+
+          APP_DIR="/home/ec2-user/sd11-final-sprint-be"
+          REPO_URL="https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git"
+          BRANCH="master" # Or main, depending on your default branch
+
+          echo "Starting clean deployment process at $(date)"
+
+          echo "Attempting to stop and remove existing Docker setup (if any)..."
+          (cd "$APP_DIR" && sudo docker-compose down -v --rmi all) || echo "Skipping docker-compose down (directory/compose file not found or command failed)."
+
+          echo "Removing old application directory..."
+          sudo rm -rf "$APP_DIR" # Use sudo if needed due to potential root-owned files inside
+
+          echo "Cloning repository branch '$BRANCH' from $REPO_URL..."
+          git clone --branch $BRANCH $REPO_URL "$APP_DIR"
+
+          echo "Navigating into new application directory..."
+          cd "$APP_DIR"
+
+          echo "Building Docker images..."
           sudo docker-compose build --pull
+
+          echo "Starting Docker containers..."
           sudo docker-compose up -d
-          
-          sleep 10
-          if sudo docker-compose ps | grep -q "Up"; then
-            echo "✅ Deployment successful! Services are running."
-          else
-            echo "❌ Deployment may have failed. Check container logs."
-            sudo docker-compose logs
-            exit 1
-          fi
+
+          echo "Deployment finished successfully at $(date)"
+          echo "Current running Docker containers:"
+          sudo docker ps
