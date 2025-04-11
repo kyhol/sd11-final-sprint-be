@@ -23,6 +23,8 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
+        script_timeout: 1800
+        command_timeout: 1800
         script: |
           cd /home/ec2-user/sd11-final-sprint-be
           git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git master
