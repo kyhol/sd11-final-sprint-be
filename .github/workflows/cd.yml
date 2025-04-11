@@ -19,10 +19,11 @@ jobs:
           cd /home/ec2-user/sd11-final-sprint-be
           git fetch https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git master
           git reset --hard FETCH_HEAD
-          
+          sudo apt update
+          sudo apt install -y maven
           mvn clean package -DskipTests
           
-          docker build -t cineflex:latest .
-          docker stop cineflex-container || true
-          docker rm cineflex-container || true
-          docker run -d --name cineflex-container -p 8080:8080 cineflex:latest
+          sudo docker build -t cineflex:latest .
+          sudo docker stop cineflex-container || true
+          sudo docker rm cineflex-container || true
+          sudo docker run -d --name cineflex-container -p 8080:8080 cineflex:latest
