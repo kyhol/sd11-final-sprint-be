@@ -14,11 +14,11 @@ Our application is currently not congigured to run locally, but feel free to rea
 
 ## Meet the Team
 
-[Brad Ayers](https://www.linkedin.com/in/bradley-ayers/)
-[Kyle Hollett](https://www.linkedin.com/in/kyle-hollett-8558842a8/)
-[Brian Janes](https://www.linkedin.com/in/briandjanes/): 
-[Michael O'Brien](https://www.linkedin.com/in/michael-obrien05/)
-[Adam Sparkes](https://www.linkedin.com/in/adam-sparkes-software/)
+[Brad Ayers](https://www.linkedin.com/in/bradley-ayers/)<br>
+[Kyle Hollett](https://www.linkedin.com/in/kyle-hollett-8558842a8/)<br>
+[Brian Janes](https://www.linkedin.com/in/briandjanes/)<br>
+[Michael O'Brien](https://www.linkedin.com/in/michael-obrien05/)<br>
+[Adam Sparkes](https://www.linkedin.com/in/adam-sparkes-software/)<br>
 
 ## 🔍 Project Summary
 This project provides RESTful APIs for a movie ticket booking application, allowing users to:
