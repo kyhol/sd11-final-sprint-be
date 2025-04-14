@@ -1,15 +1,12 @@
 name: Deploy to EC2
-
 on:
   push:
     branches: [ master ]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Deploy Clean to EC2
+    - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -18,31 +15,30 @@ jobs:
         script: |
           set -e
           set -x
-
           APP_DIR="/home/ec2-user/sd11-final-sprint-be"
-          REPO_URL="https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git"
-          BRANCH="master"
-
-          echo "Starting clean deployment process at $(date)"
-
-          echo "Attempting to stop and remove existing Docker setup (if any)..."
-          (cd "$APP_DIR" && sudo docker-compose down -v --rmi all) || echo "Skipping docker-compose down (directory/compose file not found or command failed)."
-
-          echo "Removing old application directory..."
-          sudo rm -rf "$APP_DIR" # Use sudo if needed due to potential root-owned files inside
-
-          echo "Cloning repository branch '$BRANCH' from $REPO_URL..."
-          git clone --branch $BRANCH $REPO_URL "$APP_DIR"
-
-          echo "Navigating into new application directory..."
+          echo "Starting deployment process at $(date)"
+          
+          if [ ! -d "$APP_DIR" ]; then
+            echo "Directory doesn't exist, cloning repository..."
+            REPO_URL="https://BradTheeStallion:${{ secrets.TOKEN }}@github.com/${{ github.repository }}.git"
+            git clone --branch master $REPO_URL "$APP_DIR"
+          fi
+          
           cd "$APP_DIR"
-
+          
+          echo "Stopping running containers..."
+          sudo docker-compose down || echo "No containers were running"
+          
+          echo "Pulling latest changes from master branch..."
+          git fetch --all
+          git reset --hard origin/master
+          
           echo "Building Docker images..."
-          sudo docker-compose build --pull
-
+          sudo docker-compose build
+          
           echo "Starting Docker containers..."
           sudo docker-compose up -d
-
+          
           echo "Deployment finished successfully at $(date)"
           echo "Current running Docker containers:"
           sudo docker ps
